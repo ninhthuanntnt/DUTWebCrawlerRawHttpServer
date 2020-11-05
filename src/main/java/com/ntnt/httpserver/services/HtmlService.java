@@ -92,6 +92,7 @@ public class HtmlService {
             WebClient webClient = new WebClient();
             webClient.getOptions().setCssEnabled(false);
             webClient.setJavaScriptTimeout(4000);
+            webClient.getOptions().setTimeout(10000);
 
             WebRequest webRequest   = new WebRequest(new URL(loginUrl), HttpMethod.GET);
             HtmlPage page           = webClient.getPage(webRequest);
@@ -136,18 +137,15 @@ public class HtmlService {
                 Elements cells = row.children();
 
                 String dataCell3 = cells.get(3).text().replace(" ", "");
-                String dataCell4 = cells.get(4).text().replace(" ", "")
-                        .replace(",","");
                 ScheduleEntity schedule = new ScheduleEntity(
                         0,
                         cells.get(1).text(),
                         cells.get(2).text(),
                         Float.parseFloat((dataCell3.isEmpty()) ? "-1" : dataCell3),
-                        Float.parseFloat((dataCell4.isEmpty()) ? "-1" : dataCell4),
-                        cells.get(5).text().trim().length() <= 0,
+                        cells.get(4).attr("class").contains("GridCheck"),
+                        cells.get(5).text(),
                         cells.get(6).text(),
-                        cells.get(7).text(),
-                        cells.get(8).text()
+                        cells.get(7).text()
                 );
                 schedules.add(schedule);
             }

@@ -6,8 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +15,7 @@ import java.util.Map;
 public class HttpServer extends Thread {
 
     private ServerSocket server;
+    private RequestQueueHandler requestQueueHandler;
     private Map<String, Map<Class, Method>> methodsHandleRequest;
     private String controllerPackage;
     private int port;
@@ -38,18 +38,32 @@ public class HttpServer extends Thread {
             this.server = new ServerSocket(this.port);
             initMethodsHandleRequest(this.controllerPackage);
 
-            System.out.println("[HttpServer] HttpServer started on port " + port);
+            // Start thread to add every socket to queue
+            requestQueueHandler = new RequestQueueHandler(methodsHandleRequest);
+            requestQueueHandler.start();
+
+            System.out.println(String.format("[HttpServer] HttpServer started on port %d", port));
             while (true) {
                 Socket socket = this.server.accept();
-                SocketHandler socketHandler = new SocketHandler(socket);
+                // if queue is full then delay 500ms
+                while(!requestQueueHandler.enQueue(socket)){
+                    System.out.println("[RequestQueue] Request queue is full");
+                    Thread.sleep(500);
+                }
 
-                //
-                Class socketHandlerClass = socketHandler.getClass();
-                Field methodsHandleRequestField = socketHandlerClass.getDeclaredField("methodsHandleRequest");
-                methodsHandleRequestField.setAccessible(true);
-                methodsHandleRequestField.set(socketHandler, this.methodsHandleRequest);
-
-                socketHandler.start();
+//                InetSocketAddress inetSocketAddress = (InetSocketAddress) socket.getRemoteSocketAddress();
+//                InetAddress inetAddress = inetSocketAddress.getAddress();
+//                System.out.println("[Request]    From: " + inetAddress.getHostName());
+//
+//                SocketHandler socketHandler = new SocketHandler(socket);
+//
+//                //
+//                Class socketHandlerClass = socketHandler.getClass();
+//                Field methodsHandleRequestField = socketHandlerClass.getDeclaredField("methodsHandleRequest");
+//                methodsHandleRequestField.setAccessible(true);
+//                methodsHandleRequestField.set(socketHandler, this.methodsHandleRequest);
+//
+//                socketHandler.start();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,7 +78,7 @@ public class HttpServer extends Thread {
             String absolutePath = current.getAbsolutePath().substring(0, current.getAbsolutePath().length() - 1);
 
             String pathToPackage = packageName.replace(".", "\\");
-            File scannedPackage = new File(absolutePath + "src\\" + pathToPackage);
+            File scannedPackage = new File(absolutePath + "src\\main\\java\\" + pathToPackage);
             File[] listClassFiles = scannedPackage.listFiles();
             if (listClassFiles != null && listClassFiles.length > 0) {
                 for (File classFile : listClassFiles) {

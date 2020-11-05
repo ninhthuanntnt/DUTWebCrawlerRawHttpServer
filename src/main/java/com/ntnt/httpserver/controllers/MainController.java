@@ -3,7 +3,6 @@ package com.ntnt.httpserver.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gargoylesoftware.htmlunit.util.Cookie;
-import com.mysql.cj.xdevapi.JsonArray;
 import com.ntnt.httpserver.annotations.RequestMapping;
 import com.ntnt.httpserver.enums.NotiType;
 import com.ntnt.httpserver.models.*;
@@ -11,7 +10,6 @@ import com.ntnt.httpserver.servers.HttpRequest;
 import com.ntnt.httpserver.servers.HttpResponse;
 import com.ntnt.httpserver.services.HtmlService;
 import com.ntnt.httpserver.services.JwtService;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;

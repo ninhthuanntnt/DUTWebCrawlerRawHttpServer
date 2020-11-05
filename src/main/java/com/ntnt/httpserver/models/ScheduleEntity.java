@@ -5,8 +5,7 @@ public class ScheduleEntity {
     private String code;
     private String name;
     private float credit;
-    private float tuition;
-    private boolean payed;
+    private boolean clc;
     private String lecturer;
     private String schedule;
     private String studyingWeek;
@@ -14,17 +13,12 @@ public class ScheduleEntity {
     public ScheduleEntity() {
     }
 
-    public ScheduleEntity(long id, String code,
-                          String name, float credit,
-                          float tuition, boolean payed,
-                          String lecturer, String schedule,
-                          String studyingWeek) {
+    public ScheduleEntity(long id, String code, String name, float credit, boolean clc, String lecturer, String schedule, String studyingWeek) {
         this.id = id;
         this.code = code;
         this.name = name;
         this.credit = credit;
-        this.tuition = tuition;
-        this.payed = payed;
+        this.clc = clc;
         this.lecturer = lecturer;
         this.schedule = schedule;
         this.studyingWeek = studyingWeek;
@@ -62,20 +56,12 @@ public class ScheduleEntity {
         this.credit = credit;
     }
 
-    public float getTuition() {
-        return tuition;
+    public boolean isClc() {
+        return clc;
     }
 
-    public void setTuition(float tuition) {
-        this.tuition = tuition;
-    }
-
-    public boolean isPayed() {
-        return payed;
-    }
-
-    public void setPayed(boolean payed) {
-        this.payed = payed;
+    public void setClc(boolean clc) {
+        this.clc = clc;
     }
 
     public String getLecturer() {

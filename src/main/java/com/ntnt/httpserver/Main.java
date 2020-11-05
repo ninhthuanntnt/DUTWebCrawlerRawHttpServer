@@ -8,7 +8,6 @@ public class Main {
         // write your code here
         HttpServer server = new HttpServer(5000, "com.ntnt.httpserver.controllers");
         server.start();
-
     }
 }
 

@@ -15,7 +15,7 @@ public class HttpResponse {
         this.headers.put("Server", "NTNT HttpServer");
         this.headers.put("Connection", "keep-alive");
         this.headers.put("Content-Type", "application/json");
-        this.headers.put("Access-Control-Allow-Origin","http://localhost:3000");
+        this.headers.put("Access-Control-Allow-Origin","*");
         this.headers.put("Access-Control-Allow-Methods", "GET, PUT, POST, OPTIONS");
         this.headers.put("Access-Control-Allow-Credentials", "true");
         this.headers.put("Access-Control-Max-Age", "240");

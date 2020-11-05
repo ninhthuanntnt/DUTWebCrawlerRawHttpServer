@@ -7,6 +7,8 @@ import java.lang.reflect.Method;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.function.Function;
 
 public class SocketHandler extends Thread {
     private final Socket socket;
@@ -14,8 +16,10 @@ public class SocketHandler extends Thread {
     private final InputStream reader;
 
     private Map<String, Map<Class, Method>> methodsHandleRequest;
+    private Callable callBack;
 
-    public SocketHandler(Socket socket) throws IOException {
+    public SocketHandler(Socket socket, Callable callBack) throws IOException {
+        this.callBack = callBack;
         this.socket = socket;
         this.writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
         this.reader = socket.getInputStream();
@@ -72,7 +76,6 @@ public class SocketHandler extends Thread {
                 }
 
                 httpRequest.fetchBodyInfo(bodyInfo.toString());
-                System.out.println(bodyInfo);
 
                 // make response
 //            if (bodyInfo.length() > 0) {
@@ -108,6 +111,7 @@ public class SocketHandler extends Thread {
             this.reader.close();
             this.socket.close();
 
+            callBack.call();
         } catch (Exception e) {
             e.printStackTrace();
         }
